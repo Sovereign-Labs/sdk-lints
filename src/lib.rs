@@ -54,6 +54,30 @@ pub fn enclosing_mir(tcx: TyCtxt<'_>, body_id_owner_def_id: LocalDefId) -> Optio
     }
 }
 
+
+/// Checks if a type implements DropWarning or contains any field that implements DropWarning
+fn contains_drop_warning<'tcx>(cx: &LateContext<'tcx>, ty: rustc_middle::ty::Ty<'tcx>, drop_warning: DefId) -> bool {
+    // Check if the type itself implements DropWarning
+    if implements_trait(cx, ty, drop_warning, &[]) {
+        return true;
+    }
+
+    // Recursively check fields for ADTs (structs, enums, unions)
+    if let rustc_middle::ty::TyKind::Adt(adt_def, substs) = ty.kind() {
+        for variant in adt_def.variants() {
+            for field in &variant.fields {
+                let field_ty = field.ty(cx.tcx, substs);
+                if contains_drop_warning(cx, field_ty, drop_warning) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    false
+}
+
+
 impl LateLintPass<'_> for DropLinearType {
     fn check_body(&mut self, cx: &LateContext<'_>, body: &Body<'_>) {
         // Find the MIR for the owner of this body. The owner is the function/closure/const
@@ -76,7 +100,7 @@ impl LateLintPass<'_> for DropLinearType {
                     if let Some(drop_warning) =
                         DROP_WARNING_DEF_ID.get_or_init(|| get_trait_def_id(cx.tcx, &DROP_WARNING_PATH))
                     {
-                        if implements_trait(cx, ty, *drop_warning, &[]) {
+                        if contains_drop_warning(cx, ty, *drop_warning) {
                             if let Some(decl) = place.as_local().and_then(|local| mir.local_decls.get(local)) {
                                 let decl_span = decl.source_info.span;
                                 // cx.span_lint(DROP_LINEAR_TYPE, decl_span, |diag| {
@@ -98,7 +122,7 @@ impl LateLintPass<'_> for DropLinearType {
                                             terminator.source_info.span,
                                             "item is dropped here without being used",
                                         );
-                                        diag.note("if you're sure it's safe to drop this value without using it, call `DropWarning::done()` on the value before exiting the scope");
+                                        diag.note("this type will provide destructors which perform any necessary cleanup. Check its documentatino for more details");
                                     },
                                 );
                             } else {
@@ -108,7 +132,7 @@ impl LateLintPass<'_> for DropLinearType {
                                     terminator.source_info.span,
                                     "dropping a type that should be used",
                                     None,
-                                    "one of the types in this scope was supposed to be used but was dropped. This lint *should* show you which variable was dropped, but was unable to do so because of a bug in the linter. Please report this error.",
+                                    "one of the types in this scope was supposed to be used but was dropped. This lint *should* show you which variable was dropped, but was unable to do so because of a bug in the linter. Please report this error",
                                 );
                             }
                         }
@@ -118,6 +142,7 @@ impl LateLintPass<'_> for DropLinearType {
         }
     }
 }
+
 
 #[test]
 fn ui() {

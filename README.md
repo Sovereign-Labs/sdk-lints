@@ -15,10 +15,3 @@ This crate checks for drops of types that implement the `nearly_linear::DropWarn
 ### Why is this bad?
 
 Types that implement this trait need some manual cleanup in some cases. Dropping can be an indication that the cleanup was forgotten.
-
-
-### Known problems
-
-The lint does *not* catch instances where the `DropWarning` implementer was stored in a struct/tuple/enum and that outer item was dropped.
-
-##
