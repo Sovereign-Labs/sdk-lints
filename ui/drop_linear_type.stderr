@@ -1,0 +1,17 @@
+warning: dropping an item that should be used
+  --> $DIR/drop_linear_type.rs:4:9
+   |
+LL |     let mut x = DropGuard::new(0u8);
+   |         ^^^^^
+   |
+   = help: this item should always be consumed before going out of scope. You may have forgotten to call a function that consumes this value
+note: item is dropped here without being used
+  --> $DIR/drop_linear_type.rs:7:1
+   |
+LL | }
+   | ^
+   = note: if you're sure it's safe to drop this value without using it, call `DropWarning::done()` on the value before exiting the scope
+   = note: `#[warn(drop_linear_type)]` on by default
+
+warning: 1 warning emitted
+

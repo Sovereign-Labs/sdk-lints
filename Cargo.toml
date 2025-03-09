@@ -1,0 +1,27 @@
+[package]
+name = "drop_linear_type"
+version = "0.1.0"
+authors = ["authors go here"]
+description = "description goes here"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+
+[[example]]
+name = "drop_linear_type"
+path = "ui/drop_linear_type.rs"
+
+
+[dependencies]
+clippy_utils = { git = "https://github.com/rust-lang/rust-clippy", rev = "238edf273d195c8e472851ebd60571f77f978ac8" }
+dylint_linting = "4.0.1"
+
+[dev-dependencies]
+dylint_testing = "4.0.1"
+nearly-linear = { git = "https://github.com/preston-evans98/nearly-linear", branch = "main" }
+
+[package.metadata.rust-analyzer]
+rustc_private = true
