@@ -16,22 +16,8 @@ static DROP_WARNING_DEF_ID: OnceLock<Option<DefId>> = OnceLock::new();
 
 const DROP_WARNING_PATH: [&str; 2] = ["nearly_linear", "DropWarning"];
 
-extern crate rustc_arena;
-extern crate rustc_ast;
-extern crate rustc_ast_pretty;
-extern crate rustc_data_structures;
-extern crate rustc_errors;
 extern crate rustc_hir;
-extern crate rustc_hir_pretty;
-extern crate rustc_index;
-extern crate rustc_infer;
-extern crate rustc_lexer;
 extern crate rustc_middle;
-extern crate rustc_mir_dataflow;
-extern crate rustc_parse;
-extern crate rustc_span;
-extern crate rustc_target;
-extern crate rustc_trait_selection;
 
 
 dylint_linting::declare_late_lint! {
