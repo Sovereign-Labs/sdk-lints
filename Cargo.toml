@@ -21,7 +21,7 @@ dylint_linting = "4.0.1"
 
 [dev-dependencies]
 dylint_testing = "4.0.1"
-nearly-linear = { git = "https://github.com/Sovereign-Labs/nearly-linear", branch = "main" }
+nearly-linear = { git = "ssh://git@github.com/Sovereign-Labs/nearly-linear", branch = "main" }
 
 [package.metadata.rust-analyzer]
 rustc_private = true
