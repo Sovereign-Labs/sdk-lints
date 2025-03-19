@@ -822,7 +822,7 @@ dependencies = [
 [[package]]
 name = "nearly-linear"
 version = "0.1.0"
-source = "git+https://github.com/preston-evans98/nearly-linear?branch=main#f56d23a641c654c86d454e8d1b1e9710dd65f8f6"
+source = "git+https://github.com/Sovereign-Labs/nearly-linear?branch=main#84def4e15b9d1f9a5ddf39ba16706f593deb3a8d"
 
 [[package]]
 name = "num_cpus"
